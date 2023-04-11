@@ -2,17 +2,15 @@ package com.itheima.reggie.dto;
 
 import com.itheima.reggie.entity.Dish;
 import com.itheima.reggie.entity.DishFlavor;
+import com.itheima.reggie.entity.Orders;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class DishDto extends Dish {
+public class OrdersDto extends Orders {
 
-    // 菜品对应的口味数据
-    private List<DishFlavor> flavors = new ArrayList<>();
+    private Integer SumNum;
 
-    private String categoryName;
-
-    private Integer copies;
 }
