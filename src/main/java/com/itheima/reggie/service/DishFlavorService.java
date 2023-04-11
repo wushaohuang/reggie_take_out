@@ -5,4 +5,3 @@ import com.itheima.reggie.entity.DishFlavor;
 
 public interface DishFlavorService extends IService<DishFlavor> {
 }
-

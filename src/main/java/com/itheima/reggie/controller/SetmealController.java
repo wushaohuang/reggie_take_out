@@ -95,19 +95,19 @@ public class SetmealController {
         return R.success(dtoPage);
     }
 
-//    /**
-//     * 删除套餐
-//     * @param ids
-//     * @return
-//     */
-//    @DeleteMapping
-//    public R<String> delete(@RequestParam List<Long> ids){
-//        log.info("ids:{}",ids);
-//
-//        setmealService.removeWithDish(ids);
-//
-//        return R.success("套餐数据删除成功");
-//    }
+    /**
+     * 删除套餐
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids){
+        log.info("ids:{}",ids);
+
+        setmealService.removeWithDish(ids);
+
+        return R.success("套餐数据删除成功");
+    }
 
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal) {
@@ -121,49 +121,4 @@ public class SetmealController {
 
         return R.success(setmealService.list(queryWrapper));
     }
-
-    @DeleteMapping
-    public R<String> delete(String[] ids){
-        int index=0;
-        for(String id:ids) {
-            Setmeal setmeal = setmealService.getById(id);
-            if(setmeal.getStatus()!=1){
-                setmealService.removeById(id);
-            }else {
-                index++;
-            }
-        }
-        if (index>0&&index==ids.length){
-            return R.error("选中的套餐均为启售状态，不能删除");
-        }else {
-            return R.success("删除成功");
-        }
-    }
-
-    @PostMapping("/status/{status}")
-    public R<String> sale(@PathVariable int status,String[] ids){
-        for (String id:ids){
-            Setmeal setmeal = setmealService.getById(id);
-            setmeal.setStatus(status);
-            setmealService.updateById(setmeal);
-        }
-        return R.success("修改成功");
-    }
-
-    //修改套餐
-    @PutMapping
-    public R<String> update(@RequestBody SetmealDto setmealDto){
-        setmealService.updateWithDish(setmealDto);
-        return R.success("修改成功");
-    }
-
-    //根据Id查询套餐信息
-    @GetMapping("/{id}")
-    public R<SetmealDto> getById(@PathVariable Long id){
-        SetmealDto setmealDto=setmealService.getByIdWithDish(id);
-
-        return R.success(setmealDto);
-    }
-
-
 }

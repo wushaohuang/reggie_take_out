@@ -11,14 +11,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
+/**
+ * 分类管理
+ */
 @RestController
 @RequestMapping("/category")
+@Slf4j
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    //新增分类
+    /**
+     * 新增分类
+     * @param category
+     * @return
+     */
     @PostMapping
     public R<String> save(@RequestBody Category category){
         log.info("category:{}",category);
@@ -26,49 +33,70 @@ public class CategoryController {
         return R.success("新增分类成功");
     }
 
+    /**
+     * 分页查询
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/page")
-    public R<Page> page(int page, int pageSize) {
-        //构造分页构造器
-        Page<Category> pageInfo=new Page<>(page,pageSize);
-        //构造条件构造器
-        LambdaQueryWrapper<Category> queryWrapper=new LambdaQueryWrapper<>();
+    public R<Page> page(int page,int pageSize){
+        //分页构造器
+        Page<Category> pageInfo = new Page<>(page,pageSize);
+        //条件构造器
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         //添加排序条件，根据sort进行排序
-//        queryWrapper.orderByAsc(Category::getSort);
-        queryWrapper.orderByAsc(Category::getType);
-        //进行分页查询
-        categoryService.page(pageInfo,queryWrapper);
+        queryWrapper.orderByAsc(Category::getSort);
 
+        //分页查询
+        categoryService.page(pageInfo,queryWrapper);
         return R.success(pageInfo);
     }
 
-    //根据id删除分类
+    /**
+     * 根据id删除分类
+     * @param id
+     * @return
+     */
     @DeleteMapping
-    public R<String> delete(Long ids){
-        log.info("删除分类，id为{}",ids);
-        categoryService.remove(ids);
+    public R<String> delete(Long id){
+        log.info("删除分类，id为：{}",id);
+
+        //categoryService.removeById(id);
+        categoryService.remove(id);
+
         return R.success("分类信息删除成功");
     }
 
-    //根据id删除分类
-    //修改分类
+    /**
+     * 根据id修改分类信息
+     * @param category
+     * @return
+     */
     @PutMapping
-    public R<String> update(@RequestBody Category category) {
+    public R<String> update(@RequestBody Category category){
+        log.info("修改分类信息：{}",category);
+
         categoryService.updateById(category);
-        return R.success("分类修改成功");
+
+        return R.success("修改分类信息成功");
     }
 
-    //根据条件查询分类数据
+    /**
+     * 根据条件查询分类数据
+     * @param category
+     * @return
+     */
     @GetMapping("/list")
     public R<List<Category>> list(Category category){
         //条件构造器
-        LambdaQueryWrapper<Category> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         //添加条件
-        lambdaQueryWrapper.eq(category.getType()!=null,Category::getType,category.getType());
+        queryWrapper.eq(category.getType() != null,Category::getType,category.getType());
         //添加排序条件
-        lambdaQueryWrapper.orderByAsc(Category::getSort).orderByAsc(Category::getUpdateTime);
-        List<Category> list = categoryService.list(lambdaQueryWrapper);
+        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+
+        List<Category> list = categoryService.list(queryWrapper);
         return R.success(list);
     }
-
-
 }
